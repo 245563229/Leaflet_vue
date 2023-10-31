@@ -4,7 +4,7 @@
 </template>
 <script setup>
 import L from 'leaflet'
-import {onMounted, ref, defineEmits, defineExpose, defineProps, toRefs} from "vue";
+import {onMounted, ref, defineExpose, defineProps, toRefs} from "vue";
 
 const props = defineProps({
   //地图瓦片地址
@@ -84,14 +84,14 @@ const props = defineProps({
   //标记点
   markList: {
     type: Array,
-    default:[]
+    default: []
   },
   //标记样式
   markIconStyle: {
     type: Object,
     default: {
       iconUrl: '@/assets/vue.svg',
-      iconSize:[70,70]
+      iconSize: [70, 70]
     }
   }
 })
@@ -132,11 +132,34 @@ const initMap = () => {
   //标记点为
   const myIcon = L.icon(props.markIconStyle)
   props.markList.forEach((item) => {
-    console.log('item',item);
-    let marker = L.marker(item, { icon:myIcon }).on('click', function (e) {
+    console.log('item', item);
+    let marker = L.marker(item, {icon: myIcon}).on('click', function (e) {
 
     }).addTo(map)
   })
+  //聚类图层组
+  const iconGroup = L.markerClusterGroup({
+    howCoverageOnHover: false,//当您将鼠标悬停在集群上时，它会显示其标记的边界。
+    zoomToBoundsOnClick: true,//当您单击一个集群时，我们会缩放到其边界。
+    spiderfyOnMaxZoom: true,//当您单击底部缩放级别的集群时，我们会对其进行蜘蛛化，以便您可以看到其所有标记。
+    removeOutsideVisibleBounds: true,//为了提高性能，从地图中删除离视口太远的集群和标记。
+    chunkedLoading: true, //布尔值，将 addLayer的处理分成小间隔，以便页面不会冻结
+    maxClusterRadius: 100,/*集群将从中心标记覆盖的最大半径（以像素为单位）。
+  默认 80。减少将产生更多、更小的集群。您还可以使用接受当前地图缩放并返回最大聚类半径（以像素为单位）的函数。*/
+    /*spiderLegPolylineOptions://指定PolylineOptions来设计蜘蛛腿的样式。
+     默认情况下，它们是{ weight: 1.5, color: '#222', opacity: 0.5 }*/
+  })
+  iconGroup.addTo(map)
+  const iconGroupListIcon = L.icon(props.markIconStyle)
+  const iconGroupList = []
+  const iconList = [
+    [29.524,120.154],[29.487,120.454],[29.121,120.154],[29.458,120.154],[29.874,120.487],
+  ]
+  iconList.forEach((item)=>{
+    const marker = L.marker(item,{icon:iconGroupListIcon})
+    iconGroupList.push(marker)
+  })
+  iconGroup.addLayers(iconGroupList)
 }
 onMounted(() => {
   initMap()
