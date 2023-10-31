@@ -153,10 +153,33 @@ const initMap = () => {
   const iconGroupListIcon = L.icon(props.markIconStyle)
   const iconGroupList = []
   const iconList = [
-    [29.524,120.154],[29.487,120.454],[29.121,120.154],[29.458,120.154],[29.874,120.487],
+    {
+      coordinate: [29.524, 120.154],
+      name: 'Cccc',
+    }, {
+      coordinate: [29.487, 120.454],
+      name: 'Bbbb',
+    },
+    {
+      coordinate: [29.121, 120.154],
+      name: 'Abbb',
+    },
+    {
+      coordinate: [29.458, 120.154],
+      name: 'Dbbb',
+    }
   ]
-  iconList.forEach((item)=>{
-    const marker = L.marker(item,{icon:iconGroupListIcon})
+  iconList.forEach((item) => {
+    const popup = L.popup({
+      className: 'popupClass', closeButton: false, autoClose: false
+    }).setLatLng(item.coordinate).setContent(
+      `<div class="popupContentClass"><p><span>名称：</span><span>${item.name}</span></p>
+<p><span id="ceshiI">经度：</span><span>${item.coordinate[0]}</span></p>
+<p><span>纬度：</span><span>${item.coordinate[1]}</span></p></div>`
+    )
+    const marker = L.marker(item.coordinate, {icon: iconGroupListIcon})
+      .bindPopup(popup).openPopup()
+
     iconGroupList.push(marker)
   })
   iconGroup.addLayers(iconGroupList)
@@ -173,5 +196,17 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   z-index: 10;
+}
+:deep(.leaflet-popup-content-wrapper, .leaflet-popup-tip){
+  background-image:url('@/assets/image/pupopImg.png') !important;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  color:#ffffff;
+  width: 200px;
+  height: 200px;
+  font-size: 16px;
+}
+:deep(.leaflet-popup-content-wrapper){
+  background-color: transparent;
 }
 </style>
