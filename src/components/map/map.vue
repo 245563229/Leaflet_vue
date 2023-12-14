@@ -5,7 +5,8 @@
 <script setup>
 import L from 'leaflet'
 import {onMounted, ref, defineExpose, defineProps, toRefs} from "vue";
-
+import "leaflet.heat";
+import "leaflet.motion/dist/leaflet.motion.min.js"
 const props = defineProps({
   //地图瓦片地址
   mapUrl: {
@@ -126,9 +127,31 @@ const initMap = () => {
   props.pathList.forEach((item) => {
     polyPathList.push([Number(item.lat), Number(item.lng)])
   })
-  polyLine = L.polyline(polyPathList, props.pathListStyle).addTo(map)
+  console.log('polyPathList',polyPathList)
+  // 静态路线图
+  // polyLine = L.polyline(polyPathList, props.pathListStyle).addTo(map)
   //定位到路径图位置
-  // map.fitBounds(polyLine.getBounds())
+  //  map.fitBounds(polyLine.getBounds())
+  //动态路径图
+  let motionLine = null
+  motionLine= L.motion.polyline(polyPathList,
+    {
+      color: "red",
+      fill: true,
+      fillOpacity: 0
+    },
+    {
+      auto: true,
+      duration: 6000,
+    },
+    {
+      removeOnEnd: true,
+      icon: L.icon({
+        iconUrl: "@/assets/vue.svg",
+        iconSize: [24, 24],
+        iconAnchor: [10, 3]
+      })
+    }).addTo(map);
   //标记点为
   const myIcon = L.icon(props.markIconStyle)
   props.markList.forEach((item) => {

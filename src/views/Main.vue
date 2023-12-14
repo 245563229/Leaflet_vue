@@ -9,11 +9,13 @@
       :markList="state.markList"
       :markIconStyle="{ iconUrl: markIcon, iconSize: [70, 70] }"
     ></Map>
+<!--    <GaoMap></GaoMap>-->
   </div>
 </template>
 <script setup>
 import { ref, reactive, onMounted } from "vue";
 import Map from "@/components/map/map.vue";
+import GaoMap from '@/components/gaoMap/index.vue'
 import cityPath from "@/assets/ningboCity.js";
 import pathList from "@/assets/pathDate.js";
 import markIcon from "@/assets/vue.svg";
